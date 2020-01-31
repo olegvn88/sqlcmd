@@ -10,22 +10,38 @@ public class JDBCDatabaseManager implements DatabaseManager {
 
     @Override
     public DataSet[] getTableData(String tableName) {
-        return new DataSetImpl[]{};
+        DataSetImpl[] dataSet = new DataSetImpl[]{};
+        try {
+        Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery("SELECT * FROM " + tableName);
+            if (rs.next()) {
+                System.out.println(rs.getString(1));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return dataSet;
     }
 
-    private int getSize(String tableName) throws SQLException {
+    public int getSize(String tableName) {
+        int size = 0;
+        try {
         Statement statement = connection.createStatement();
-        ResultSet rsCount = statement.executeQuery("SELECT COUNT(*) FROM users");
-        rsCount.next();
-        int size = rsCount.getInt(1);
-        rsCount.close();
+        ResultSet rsCount = statement.executeQuery("SELECT COUNT(*) FROM " + tableName);
+            rsCount.next();
+            size = rsCount.getInt(1);
+            rsCount.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return size;
     }
 
     public String[] getTableNames() {
         try {
             Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * FROM information_schema");
+            ResultSet rs = statement.executeQuery("SELECT table_name FROM information_schema.tables" +
+                    " WHERE table_schema = 'public' ORDER BY table_name;");
             String[] tables = new String[100];
             int index = 0;
             while (rs.next()) {
@@ -45,7 +61,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
     public void connect(String database, String user, String password) {
         try {
             String url = "jdbc:postgresql://" + POSTGRES_ADDRESS + "/" + database;
-            Connection conn = DriverManager.getConnection(url, user, password);
+            connection = DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
             System.out.println(String.format("Can't make connection for database : %s user: %s", database, user));
             e.printStackTrace();

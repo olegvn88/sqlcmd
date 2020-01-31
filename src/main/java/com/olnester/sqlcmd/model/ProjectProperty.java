@@ -6,7 +6,7 @@ import java.util.Properties;
 
 public class ProjectProperty {
     public static final String POSTGRES_ADDRESS = ProjectProperty.getProperty("postgres_address");
-    public static final String POSTGRES_DATABASE = ProjectProperty.getProperty("postgres_databse");
+    public static final String POSTGRES_DATABASE = ProjectProperty.getProperty("postgres_database");
     public static final String POSTGRES_USER = ProjectProperty.getProperty("postgres_user");
     public static final String POSTGRES_PASSWORD = ProjectProperty.getProperty("postgres_password");
 
