@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
 
 import java.util.Arrays;
 
+import static com.olnester.sqlcmd.model.ProjectProperty.*;
 import static org.testng.Assert.assertEquals;
 
 public class JDBCDatabaseManagerTest {
@@ -16,7 +17,8 @@ public class JDBCDatabaseManagerTest {
     @BeforeClass
     public void setup() {
         manager = new JDBCDatabaseManager();
-        manager.connect("demodb", "postgres", "admin");
+        manager.connect(
+                POSTGRES_DATABASE, POSTGRES_USER, POSTGRES_PASSWORD);
     }
 
     @Test

@@ -3,6 +3,8 @@ package com.olnester.sqlcmd.model;
 import java.sql.*;
 import java.util.Arrays;
 
+import static com.olnester.sqlcmd.model.ProjectProperty.POSTGRES_ADDRESS;
+
 public class JDBCDatabaseManager implements DatabaseManager {
     private Connection connection;
 
@@ -42,7 +44,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
     @Override
     public void connect(String database, String user, String password) {
         try {
-            String url = "jdbc:postgresql://localhost/" + database;
+            String url = "jdbc:postgresql://" + POSTGRES_ADDRESS + "/" + database;
             Connection conn = DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
             System.out.println(String.format("Can't make connection for database : %s user: %s", database, user));
