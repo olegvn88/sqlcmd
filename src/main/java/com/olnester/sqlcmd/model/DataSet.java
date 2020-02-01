@@ -1,17 +1,56 @@
 package com.olnester.sqlcmd.model;
 
-public interface DataSet {
-    Object[] getValues();
+import java.util.Arrays;
 
-    String[] getNames();
+public class DataSet {
 
-    void put(String id, Object i);
+    static class Data {
+        String name;
+        Object value;
 
-    void updateFrom(DataSet newValue);
+        public String getName() {
+            return name;
+        }
 
-    Object get(String id);
+        public Object getValue() {
+            return value;
+        }
 
-    String getName();
 
-    Object getValue();
+        public Data(String name, Object value) {
+            this.name = name;
+            this.value = value;
+        }
+    }
+
+    private Data[] data = new Data[100]; //TODO remove magic number 100
+    private int index = 0;
+
+    public void put(String name, Object value) {
+        data[index++] = new Data(name, value);
+    }
+
+    public Object[] getValues() {
+        Object[] result = new Object[index];
+        for (int i = 0; i < index; i++) {
+            result[i] = data[i].getValue();
+        }
+        return result;
+    }
+
+    public String[] getNames() {
+        String[] result = new String[index];
+        for (int i = 0; i < index; i++) {
+            result[i] = data[i].getName();
+        }
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "DataSet{\n" +
+                "names:" + Arrays.toString(getNames()) + "\n" +
+                "values:" + Arrays.toString(getValues()) + "\n" +
+                "}";
+    }
 }

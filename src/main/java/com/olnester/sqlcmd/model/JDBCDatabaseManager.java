@@ -11,14 +11,15 @@ public class JDBCDatabaseManager implements DatabaseManager {
     @Override
     public DataSet[] getTableData(String tableName) {
         int size = getSize(tableName);
-        DataSetImpl[] result = new DataSetImpl[size];
+        DataSet[] result = new DataSet[size];
+
         try {
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM " + tableName);
             ResultSetMetaData resultSetMetaData = rs.getMetaData();
             int index = 0;
             while (rs.next()) {
-                DataSetImpl dataSet = new DataSetImpl();
+                DataSet dataSet = new DataSet();
                 result[index++] = dataSet;
                 for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
                     dataSet.put(resultSetMetaData.getColumnName(i), rs.getObject(i));
@@ -92,8 +93,8 @@ public class JDBCDatabaseManager implements DatabaseManager {
     @Override
     public void update(String tableName, int id, DataSet newValue) {
         try {
-            String tableNames = getNameFormated(newValue, "%s = ?,");
-            String sql = "UPDATE " + tableName + " SET " + tableNames + " WHERE id > 5 and id < 10";
+            String tableNames = getNameFormatted(newValue, "%s = ?,");
+            String sql = "UPDATE " + tableName + " SET " + tableNames + " WHERE id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             int index = 1;
             for (Object value : newValue.getValues()) {
@@ -108,34 +109,34 @@ public class JDBCDatabaseManager implements DatabaseManager {
         }
     }
 
-    private String getNameFormated(DataSet newValue, String format) {
-        String string = "";
-        for (String name : newValue.getNames()) {
-            string += String.format(format, name);
+    private String getNameFormatted(DataSet input, String format) {
+        String names = "";
+        for (String name : input.getNames()) {
+            names += String.format(format, name);
         }
-        string = string.substring(0, string.length() - 1);
-        return string;
+        names = names.substring(0, names.length() - 1);
+        return names;
     }
 
-    @Override
-    public void create(DataSet input) {
-        try {
-            Statement statement = connection.createStatement();
-            String tableNames = getNameFormated(input, "%s,");
-            String values = getValuesFormated(input, "'%s'");
-            statement.executeUpdate("INSERT INTO user (" + tableNames + ") " + "VALUES (" + values + ")");
-            statement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String getValuesFormated(DataSet input, String format) {
+    private String getValuesFormatted(DataSet input, String format) {
         String values = "";
         for (Object value : input.getValues()) {
             values += String.format(format, value);
         }
         values = values.substring(0, values.length() - 1);
         return values;
+    }
+
+    @Override
+    public void create(DataSet input) {
+        try {
+            Statement statement = connection.createStatement();
+            String tableNames = getNameFormatted(input, "%s,");
+            String values = getValuesFormatted(input, "'%s',");
+            statement.executeUpdate("INSERT INTO users (" + tableNames + ") " + "VALUES (" + values + ")");
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

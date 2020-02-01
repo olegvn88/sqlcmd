@@ -1,7 +1,6 @@
 package com.olnester.sqlcmd;
 
 import com.olnester.sqlcmd.model.DataSet;
-import com.olnester.sqlcmd.model.DataSetImpl;
 import com.olnester.sqlcmd.model.JDBCDatabaseManager;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -34,7 +33,7 @@ public class JDBCDatabaseManagerTest {
         manager.clear("users");
 
         //when
-        DataSet input = new DataSetImpl();
+        DataSet input = new DataSet();
         input.put("id", 13);
         input.put("name", "Stiven");
         input.put("password", "1111");
@@ -45,7 +44,16 @@ public class JDBCDatabaseManagerTest {
         assertEquals(1, users.length);
 
         DataSet user = users[0];
-        assertEquals("[name, password, id]", Arrays.toString(user.getNames()));
-        assertEquals("[Stiven, 1111, i3]", Arrays.toString(user.getValues()));
+        assertEquals("[id, name, password]", Arrays.toString(user.getNames()));
+        assertEquals("[13, Stiven, 1111]", Arrays.toString(user.getValues()));
+    }
+
+    @Test
+    public void testUpdateValue() {
+        DataSet dataSet = new DataSet();
+        dataSet.put("password", "pass");
+//        dataSet.put("id", 4);
+        manager.update("users", 4, dataSet);
+        System.out.println(Arrays.toString(manager.getTableData("users")));
     }
 }
