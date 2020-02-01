@@ -10,9 +10,7 @@ public class Demo {
         jdbcDatabaseManager.connect(POSTGRES_DATABASE, POSTGRES_USER, POSTGRES_PASSWORD);
         String[] tables = jdbcDatabaseManager.getTableNames();
         printTablesList(tables);
-        int size = jdbcDatabaseManager.getSize("users");
-        System.out.println(size);
-        System.out.println(jdbcDatabaseManager.getTableData("users")[0].getValues());
+//        System.out.println(jdbcDatabaseManager.getTableData("users")[0].getValues());
     }
 
     private static void printTablesList(String[] result) {

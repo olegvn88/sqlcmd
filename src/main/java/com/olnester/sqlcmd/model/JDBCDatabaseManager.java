@@ -10,24 +10,33 @@ public class JDBCDatabaseManager implements DatabaseManager {
 
     @Override
     public DataSet[] getTableData(String tableName) {
-        DataSetImpl[] dataSet = new DataSetImpl[]{};
+        int size = getSize(tableName);
+        DataSetImpl[] result = new DataSetImpl[size];
         try {
-        Statement statement = connection.createStatement();
-        ResultSet rs = statement.executeQuery("SELECT * FROM " + tableName);
-            if (rs.next()) {
-                System.out.println(rs.getString(1));
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM " + tableName);
+            ResultSetMetaData resultSetMetaData = rs.getMetaData();
+            int index = 0;
+            while (rs.next()) {
+                DataSetImpl dataSet = new DataSetImpl();
+                result[index++] = dataSet;
+                for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
+                    dataSet.put(resultSetMetaData.getColumnName(i), rs.getObject(i));
+                }
             }
+            rs.close();
+            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return dataSet;
+        return result;
     }
 
-    public int getSize(String tableName) {
+    private int getSize(String tableName) {
         int size = 0;
         try {
-        Statement statement = connection.createStatement();
-        ResultSet rsCount = statement.executeQuery("SELECT COUNT(*) FROM " + tableName);
+            Statement statement = connection.createStatement();
+            ResultSet rsCount = statement.executeQuery("SELECT COUNT(*) FROM " + tableName);
             rsCount.next();
             size = rsCount.getInt(1);
             rsCount.close();

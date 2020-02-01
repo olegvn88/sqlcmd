@@ -23,14 +23,15 @@ public class JDBCDatabaseManagerTest {
 
     @Test
     public void testGetAllTableNames() {
+
         String[] tableNames = manager.getTableNames();
-        assertEquals("[user]", Arrays.toString(tableNames));
+        assertEquals("[users]", Arrays.toString(tableNames));
     }
 
     @Test
     public void testGetTableData() {
         //given
-        manager.clear("user");
+        manager.clear("users");
 
         //when
         DataSet input = new DataSetImpl();
@@ -40,7 +41,7 @@ public class JDBCDatabaseManagerTest {
         manager.create(input);
         //then
 
-        DataSet[] users = manager.getTableData("user");
+        DataSet[] users = manager.getTableData("users");
         assertEquals(1, users.length);
 
         DataSet user = users[0];

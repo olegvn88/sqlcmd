@@ -1,6 +1,14 @@
 package com.olnester.sqlcmd.model;
 
-public class DataSetImpl implements DataSet {
+import java.util.Arrays;
+
+public class DataSetImpl { //implements DataSet {
+
+
+    public DataSetImpl(String name, Object value) {
+        this.name = name;
+        this.value = value;
+    }
 
     private String name;
     private Object value;
@@ -9,11 +17,6 @@ public class DataSetImpl implements DataSet {
     public DataSet[] data;
 
     public DataSetImpl() {
-    }
-
-    public DataSetImpl(String name, Object value) {
-        this.name = name;
-        this.value = value;
     }
 
     public Object[] getValues() {
@@ -32,8 +35,17 @@ public class DataSetImpl implements DataSet {
         return result;
     }
 
-    public void put(String id, Object i) {
-        data[freeIndex++] = new DataSetImpl(name, value);
+    public void put(String name, Object value) {
+        boolean updated = false;
+        for (int index = 0; index < freeIndex; index++) {
+            if (data[freeIndex].getName().equals(name)) {
+                data[freeIndex].value = value;
+                updated = true;
+            }
+        }
+        if (!updated) {
+            data[freeIndex++] = new DataSetImpl(name, value);
+        }
     }
 
     @Override
@@ -65,5 +77,13 @@ public class DataSetImpl implements DataSet {
     @Override
     public Object getValue() {
         return value;
+    }
+
+    @Override
+    public String toString() {
+        return "DataSetImpl{\n" +
+                "names=" + Arrays.toString(getNames()) + "\n" +
+                "values=" + Arrays.toString(getValues()) + "\n" +
+                ")";
     }
 }
